@@ -1,19 +1,18 @@
-import view as view
 import controller as controller
-import csv
+import time
 
 
 def main():
-    data = []
-    with open('files/' + 'easy' + '.csv', newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        view.ShowTable(reader)
-        csvfile.seek(0)
-        for row in reader:
-            data.append(row)
+    data = controller.ReadFile('extreme')
+    while controller.SudokuUnfinished(data):
+        data = controller.TryToSolve(data)
 
-        controller.TryToSolve(data)
-
+        for row in data:
+            print('  '.join(row))
+        controller.WriteFile('extreme-output', data)
+        time.sleep(0.5)
+        print('\n'*3)
+    print("Completed ... ?")
 
 if __name__ == '__main__':
     main()
