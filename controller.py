@@ -1,17 +1,14 @@
-import csv
-
-
 # Working, read a csv file in /files, given its name, and return its content
 def ReadFile(name):
     data = []
-    with open('files/' + name + '.csv', newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=' ')
-        csvfile.seek(0)
+    with open('files/' + name + '.txt') as file:
+        file.seek(0)
         idx_row = 0
-        for row in reader:
-            if row:
+        for row in file:
+            s_row = row.rstrip().split(' ')
+            if s_row:
                 data.append([])
-                for number in row:
+                for number in s_row:
                     data[idx_row].append(number)
                 idx_row += 1
         return data
@@ -19,9 +16,9 @@ def ReadFile(name):
 
 # Working, create a csv file in /files, and write the data inside
 def WriteFile(name, data):
-    writer = csv.writer(open('files/' + name + '.csv', 'w', newline=''))
-    writer.writerows(data)
-
+    with open('files/' + name + '.txt', 'w') as newfile:
+        for row in data:
+            newfile.writelines(' '.join(row) + '\n')
 
 
 # Working, return True if a cell is still empty
@@ -33,16 +30,21 @@ def SudokuUnfinished(data):
 
 
 def TryToSolve(data):
-    suggestions = {}
-    CreateSuggestions(suggestions, data)
-    ExecuteSuggestions(suggestions, data)
+    suggestions = CreateSuggestions(data)
+    SingledOutSuggestions(suggestions, data)
+
+    suggestions = CreateSuggestions(data)
+    CheckSuggestions(suggestions, data)
     for row in suggestions:
-        print(row, suggestions[row])
+        print(row[0] + 1 , row[1] + 1,  suggestions[row])
+
+    print('')
+
     return data
 
 
 # Working, for every cell that has only 1 suggestion, it confirms it and write it in data
-def ExecuteSuggestions(suggestions, data):
+def SingledOutSuggestions(suggestions, data):
     for row in suggestions:
         if len(suggestions[row]) == 1:
             data[row[0]][row[1]] = suggestions[row][0]
@@ -50,7 +52,8 @@ def ExecuteSuggestions(suggestions, data):
 
 
 # Working, check for every cell, every possible number, then write it in suggestions = {}
-def CreateSuggestions(suggestions, data):
+def CreateSuggestions(data):
+    suggestions = {}
     for number in range(1, 10):
         x = 0
         for row in data:
@@ -66,6 +69,70 @@ def CreateSuggestions(suggestions, data):
                 y += 1
             x += 1
     return suggestions
+
+
+def CheckSuggestions(suggestions, data):
+    for row in suggestions:
+        for suggestion in suggestions[row]:
+            if IsOnlySuggestionInLine(suggestions, suggestion, row[0]):
+                data[row[0]][row[1]] = suggestion
+            if IsOnlySuggestionInColumn(suggestions, suggestion, row[1]):
+                data[row[0]][row[1]] = suggestion
+            if IsOnlySuggestionInSquare(suggestions, suggestion, row[0], row[1]):
+                data[row[0]][row[1]] = suggestion
+    return suggestions
+
+
+def IsOnlySuggestionInLine(suggestions, suggestion, line):
+    same_suggestion_found = 0
+    for row in suggestions:
+        for original_sug in suggestions[row]:
+            if row[0] == line and original_sug == suggestion:
+                same_suggestion_found += 1
+
+    if same_suggestion_found == 1:
+        return True
+    return False
+
+
+def IsOnlySuggestionInColumn(suggestions, suggestion, column):
+    same_suggestion_found = 0
+    for row in suggestions:
+        for original_sug in suggestions[row]:
+            if row[1] == column and original_sug == suggestion:
+                same_suggestion_found += 1
+
+    if same_suggestion_found == 1:
+        return True
+    return False
+
+def IsOnlySuggestionInSquare(suggestions, suggestion, line, column):
+    same_suggestion_found = 0
+    limits = []
+
+    x_line = 0
+    y_line = 2
+    while not limits:
+        if x_line <= line <= y_line:
+            x_col = 0
+            y_col = 2
+            while not limits:
+                if x_col <= column <= y_col:
+                    limits = [x_line, y_line, x_col, y_col]
+                x_col += 3
+                y_col += 3
+        x_line += 3
+        y_line += 3
+
+    for row in suggestions:
+        for original_sug in suggestions[row]:
+            if limits[0] <= row[0] <= limits[1] and limits[2] <= row[1] <= limits[3] and original_sug == suggestion:
+                same_suggestion_found += 1
+
+    if same_suggestion_found == 1:
+        return True
+    return False
+
 
 # Working, return True if an array contains a number, used to check line, column, and group
 def IsNumberInArray(array, number):

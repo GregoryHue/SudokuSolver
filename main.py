@@ -3,13 +3,15 @@ import time
 
 
 def main():
-    data = controller.ReadFile('extreme')
+    name = 'testing'
+
+    data = controller.ReadFile(name)
     while controller.SudokuUnfinished(data):
         data = controller.TryToSolve(data)
 
         for row in data:
-            print('  '.join(row))
-        controller.WriteFile('extreme-output', data)
+            print(' '.join(row))
+        controller.WriteFile(name + '-output', data)
         time.sleep(0.5)
         print('\n'*3)
     print("Completed ... ?")
