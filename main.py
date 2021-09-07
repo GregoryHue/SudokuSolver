@@ -1,19 +1,13 @@
 import controller as controller
-import time
 
 
 def main():
-    name = 'testing'
+    name = 'hard'
 
     data = controller.ReadFile(name)
-    while controller.SudokuUnfinished(data):
-        data = controller.TryToSolve(data)
+    controller.TryToSolve(data)
+    controller.WriteFile(name + '-output', data)
 
-        for row in data:
-            print(' '.join(row))
-        controller.WriteFile(name + '-output', data)
-        time.sleep(0.5)
-        print('\n'*3)
     print("Completed ... ?")
 
 if __name__ == '__main__':

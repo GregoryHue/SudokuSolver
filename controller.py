@@ -1,3 +1,6 @@
+import time
+
+
 # Working, read a csv file in /files, given its name, and return its content
 def ReadFile(name):
     data = []
@@ -30,15 +33,27 @@ def SudokuUnfinished(data):
 
 
 def TryToSolve(data):
-    suggestions = CreateSuggestions(data)
-    SingledOutSuggestions(suggestions, data)
 
-    suggestions = CreateSuggestions(data)
-    CheckSuggestions(suggestions, data)
-    for row in suggestions:
-        print(row[0] + 1 , row[1] + 1,  suggestions[row])
+    while SudokuUnfinished(data):
+        suggestions = CreateSuggestions(data)
+        SingledOutSuggestions(suggestions, data)
 
-    print('')
+        suggestions = CreateSuggestions(data)
+        CheckSuggestions(suggestions, data)
+
+        suggestions = CreateSuggestions(data)
+        PairSuggestions(suggestions, data)
+
+        print('Row | Column | Candidates')
+
+        for row in suggestions:
+            print(' ', row[0] + 1 , '    ', row[1] + 1, '   ',  suggestions[row])
+
+        print('\n      Table')
+
+        for row in data:
+            print(' '.join(row))
+        print('')
 
     return data
 
@@ -133,6 +148,17 @@ def IsOnlySuggestionInSquare(suggestions, suggestion, line, column):
         return True
     return False
 
+
+# TOFINISH
+def PairSuggestions(suggestions, data):
+    for row in suggestions:
+        idx = 0
+        for candidate in suggestions[row]:
+            print(row, suggestions[row])
+            idx += 1
+            for x in range(idx, len(suggestions[row])):
+                pairs = candidate, suggestions[row][x]
+                print(pairs)
 
 # Working, return True if an array contains a number, used to check line, column, and group
 def IsNumberInArray(array, number):
