@@ -33,27 +33,16 @@ def SudokuUnfinished(data):
 
 
 def TryToSolve(data):
-
     while SudokuUnfinished(data):
         suggestions = CreateSuggestions(data)
+        ShowTableAndSuggestion(data, suggestions)
         SingledOutSuggestions(suggestions, data)
 
         suggestions = CreateSuggestions(data)
         CheckSuggestions(suggestions, data)
 
         suggestions = CreateSuggestions(data)
-        PairSuggestions(suggestions, data)
-
-        print('Row | Column | Candidates')
-
-        for row in suggestions:
-            print(' ', row[0] + 1 , '    ', row[1] + 1, '   ',  suggestions[row])
-
-        print('\n      Table')
-
-        for row in data:
-            print(' '.join(row))
-        print('')
+        # PairSuggestions(suggestions, data)
 
     return data
 
@@ -75,7 +64,8 @@ def CreateSuggestions(data):
             y = 0
             for cell in row:
                 if cell == '*':
-                    if not IsNumberInArray(Line(data, x), number) and not IsNumberInArray(Column(data, y), number) and not IsNumberInArray(
+                    if not IsNumberInArray(Line(data, x), number) and not IsNumberInArray(Column(data, y),
+                                                                                          number) and not IsNumberInArray(
                             Group(data, x, y), number):
                         try:
                             suggestions[x, y].append(str(number))
@@ -121,6 +111,7 @@ def IsOnlySuggestionInColumn(suggestions, suggestion, column):
         return True
     return False
 
+
 def IsOnlySuggestionInSquare(suggestions, suggestion, line, column):
     same_suggestion_found = 0
     limits = []
@@ -159,6 +150,7 @@ def PairSuggestions(suggestions, data):
             for x in range(idx, len(suggestions[row])):
                 pairs = candidate, suggestions[row][x]
                 print(pairs)
+
 
 # Working, return True if an array contains a number, used to check line, column, and group
 def IsNumberInArray(array, number):
@@ -217,3 +209,17 @@ def Group(data, line, column):
             y += 1
         x += 1
     return group_content
+
+
+# TODO : add line for each number added; write in a log file
+def ShowTableAndSuggestion(data, suggestions):
+    print('Row | Column | Candidates')
+
+    for row in suggestions:
+        print(' ', row[0] + 1, '    ', row[1] + 1, '   ', suggestions[row])
+
+    print('\n      Table')
+
+    for row in data:
+        print(' '.join(row))
+    print('')
