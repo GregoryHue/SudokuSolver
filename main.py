@@ -2,7 +2,7 @@ import controller as controller
 
 
 def main():
-    name = 'medium'
+    name = 'extreme'
 
     data = controller.ReadFile(name)
     controller.TryToSolve(data)

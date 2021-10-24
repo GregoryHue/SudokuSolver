@@ -1,4 +1,10 @@
+import random
 import time
+from random import randrange
+from copy import deepcopy
+
+# suggestion : {(1, 0): ['1', '2', '4', '7', '9'], (1, 1): ['1', '4', '7', '9'], (1, 2): ['1', '2', '9'] ... }
+# data : [['3', '6', '8', '1', '2', '4', '7', '9', '5'], ['*', '*', '*', '*', '3', '*', '*', '*', '6'] ... ]
 
 
 # Working, read a csv file in /files, given its name, and return its content
@@ -32,17 +38,51 @@ def SudokuUnfinished(data):
     return False
 
 
+def TryRandomSuggestion(data, suggestions):
+    random_suggestion = random.randint(0, len(suggestions.keys()))
+
+    i = 0
+    for row in suggestions:
+        if i == random_suggestion:
+            random_number = random.choice(suggestions[row])
+
+            data[row[0]][row[1]] = random_number
+            print("Writing down : ", random_number, " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
+                  " | Trying a random step")
+            return data
+
+        i += 1
+
+
 def TryToSolve(data):
+    safe_data = [[]]
+
     while SudokuUnfinished(data):
-        suggestions = CreateSuggestions(data)
-        ShowTableAndSuggestion(data, suggestions)
-        SingledOutSuggestions(suggestions, data)
+
+        old_data = data
 
         suggestions = CreateSuggestions(data)
-        CheckSuggestions(suggestions, data)
+        data = SingledOutSuggestions(suggestions, data)
 
         suggestions = CreateSuggestions(data)
-        # PairSuggestions(suggestions, data)
+        data = CheckSuggestions(suggestions, data)
+
+        if old_data == data:
+            if safe_data == [[]]:
+
+                safe_data = list(data)
+                print("Creating a safe data HERE1")
+                ShowTable(safe_data)
+            else:
+
+                data = list(safe_data)
+                print("Returning to safe data HERE2")
+                ShowTable(safe_data)
+                print("\n")
+                ShowTable(data)
+
+                suggestions = CreateSuggestions(data)
+                data = TryRandomSuggestion(data, suggestions)
 
     return data
 
@@ -52,7 +92,10 @@ def SingledOutSuggestions(suggestions, data):
     for row in suggestions:
         if len(suggestions[row]) == 1:
             data[row[0]][row[1]] = suggestions[row][0]
-    return suggestions
+            print("Writing down : ", suggestions[row][0], " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
+                  " | Only suggestion in single cell")
+            ShowTable(data)
+            return suggestions
 
 
 # Working, check for every cell, every possible number, then write it in suggestions = {}
@@ -66,13 +109,14 @@ def CreateSuggestions(data):
                 if cell == '*':
                     if not IsNumberInArray(Line(data, x), number) and not IsNumberInArray(Column(data, y),
                                                                                           number) and not IsNumberInArray(
-                            Group(data, x, y), number):
+                        Group(data, x, y), number):
                         try:
                             suggestions[x, y].append(str(number))
                         except KeyError:
                             suggestions[x, y] = [str(number)]
                 y += 1
             x += 1
+    ShowSuggestions(suggestions)
     return suggestions
 
 
@@ -81,11 +125,22 @@ def CheckSuggestions(suggestions, data):
         for suggestion in suggestions[row]:
             if IsOnlySuggestionInLine(suggestions, suggestion, row[0]):
                 data[row[0]][row[1]] = suggestion
+                print("Writing down : ", suggestions[row][0], " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
+                      " | Only suggestion in line")
+                ShowTable(data)
+                return suggestions
             if IsOnlySuggestionInColumn(suggestions, suggestion, row[1]):
                 data[row[0]][row[1]] = suggestion
+                print("Writing down : ", suggestions[row][0], " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
+                      " | Only suggestion in column")
+                ShowTable(data)
+                return suggestions
             if IsOnlySuggestionInSquare(suggestions, suggestion, row[0], row[1]):
                 data[row[0]][row[1]] = suggestion
-    return suggestions
+                print("Writing down : ", suggestions[row][0], " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
+                      " | Only suggestion in square")
+                ShowTable(data)
+                return suggestions
 
 
 def IsOnlySuggestionInLine(suggestions, suggestion, line):
@@ -138,18 +193,6 @@ def IsOnlySuggestionInSquare(suggestions, suggestion, line, column):
     if same_suggestion_found == 1:
         return True
     return False
-
-
-# TOFINISH
-def PairSuggestions(suggestions, data):
-    for row in suggestions:
-        idx = 0
-        for candidate in suggestions[row]:
-            print(row, suggestions[row])
-            idx += 1
-            for x in range(idx, len(suggestions[row])):
-                pairs = candidate, suggestions[row][x]
-                print(pairs)
 
 
 # Working, return True if an array contains a number, used to check line, column, and group
@@ -212,14 +255,19 @@ def Group(data, line, column):
 
 
 # TODO : add line for each number added; write in a log file
-def ShowTableAndSuggestion(data, suggestions):
+def ShowTable(data):
+    print('\n      Table')
+
+    for row in data:
+        print(' '.join(row))
+    print('')
+
+
+def ShowSuggestions(suggestions):
+    print('\n' * 2)
     print('Row | Column | Candidates')
 
     for row in suggestions:
         print(' ', row[0] + 1, '    ', row[1] + 1, '   ', suggestions[row])
 
-    print('\n      Table')
-
-    for row in data:
-        print(' '.join(row))
     print('')
