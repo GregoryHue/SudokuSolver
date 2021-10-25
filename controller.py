@@ -38,51 +38,34 @@ def SudokuUnfinished(data):
     return False
 
 
-def TryRandomSuggestion(data, suggestions):
-    random_suggestion = random.randint(0, len(suggestions.keys()))
-
-    i = 0
-    for row in suggestions:
-        if i == random_suggestion:
-            random_number = random.choice(suggestions[row])
-
-            data[row[0]][row[1]] = random_number
-            print("Writing down : ", random_number, " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
-                  " | Trying a random step")
-            return data
-
-        i += 1
-
-
 def TryToSolve(data):
-    safe_data = [[]]
+    safe_data = []
 
     while SudokuUnfinished(data):
 
-        old_data = data
+        old_data = []
+        for row in data:
+            old_data.append(row.copy())
 
         suggestions = CreateSuggestions(data)
-        data = SingledOutSuggestions(suggestions, data)
+        SingledOutSuggestions(suggestions, data)s
 
         suggestions = CreateSuggestions(data)
-        data = CheckSuggestions(suggestions, data)
+        CheckSuggestions(suggestions, data)
 
-        if old_data == data:
-            if safe_data == [[]]:
+        if SameLists(data, old_data):
+            if not safe_data:
+                for row in data:
+                    safe_data.append(row.copy())
+                print("Creating a safe data")
+            elif not suggestions:
+                data = []
+                for row in safe_data:
+                    data.append(row.copy())
+                print("Returning to safe data")
 
-                safe_data = list(data)
-                print("Creating a safe data HERE1")
-                ShowTable(safe_data)
-            else:
-
-                data = list(safe_data)
-                print("Returning to safe data HERE2")
-                ShowTable(safe_data)
-                print("\n")
-                ShowTable(data)
-
-                suggestions = CreateSuggestions(data)
-                data = TryRandomSuggestion(data, suggestions)
+            suggestions = CreateSuggestions(data)
+            TryRandomSuggestion(data, suggestions)
 
     return data
 
@@ -252,6 +235,35 @@ def Group(data, line, column):
             y += 1
         x += 1
     return group_content
+
+
+def TryRandomSuggestion(data, suggestions):
+    random_suggestion = random.randint(0, len(suggestions.keys()))
+
+    i = 0
+    for row in suggestions:
+        if i == random_suggestion:
+            random_number = random.choice(suggestions[row])
+
+            data[row[0]][row[1]] = random_number
+            print("Writing down : ", random_number, " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
+                  " | Trying a random step")
+            return data
+
+        i += 1
+
+
+def SameLists(data, old_data):
+    x = 0
+    for row in data:
+        y = 0
+        for cell in row:
+            if old_data[x][y] != cell:
+                return False
+            y += 1
+        x += 1
+    return True
+
 
 
 # TODO : add line for each number added; write in a log file
