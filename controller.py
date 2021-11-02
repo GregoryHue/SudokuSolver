@@ -1,11 +1,8 @@
 import random
-import time
-from random import randrange
-from copy import deepcopy
+
 
 # suggestion : {(1, 0): ['1', '2', '4', '7', '9'], (1, 1): ['1', '4', '7', '9'], (1, 2): ['1', '2', '9'] ... }
 # data : [['3', '6', '8', '1', '2', '4', '7', '9', '5'], ['*', '*', '*', '*', '3', '*', '*', '*', '6'] ... ]
-
 
 # Working, read a csv file in /files, given its name, and return its content
 def ReadFile(name):
@@ -103,6 +100,7 @@ def CreateSuggestions(data):
     return suggestions
 
 
+# Working, write down single suggestions in line, column, and square
 def CheckSuggestions(suggestions, data):
     for row in suggestions:
         for suggestion in suggestions[row]:
@@ -126,6 +124,7 @@ def CheckSuggestions(suggestions, data):
                 return suggestions
 
 
+# Working, check if single suggestions in line
 def IsOnlySuggestionInLine(suggestions, suggestion, line):
     same_suggestion_found = 0
     for row in suggestions:
@@ -138,6 +137,7 @@ def IsOnlySuggestionInLine(suggestions, suggestion, line):
     return False
 
 
+# Working, check if single suggestions in column
 def IsOnlySuggestionInColumn(suggestions, suggestion, column):
     same_suggestion_found = 0
     for row in suggestions:
@@ -150,6 +150,7 @@ def IsOnlySuggestionInColumn(suggestions, suggestion, column):
     return False
 
 
+# Working, check if single suggestions in square
 def IsOnlySuggestionInSquare(suggestions, suggestion, line, column):
     same_suggestion_found = 0
     limits = []
@@ -180,9 +181,34 @@ def IsOnlySuggestionInSquare(suggestions, suggestion, line, column):
 
 # Working, return True if an array contains a number, used to check line, column, and group
 def IsNumberInArray(array, number):
+    if number is None:
+        return False
+
+    if not array:
+        return False
+
     if str(number) in array:
         return True
     return False
+
+
+# Working, return True if an array contains a number, only once, used to check line, column, and group
+def IsOnceInArray(array, number):
+    count = 0
+
+    if number is None:
+        return False
+
+    if not array:
+        return False
+
+    for cell in array:
+        if str(number) == cell:
+            count += 1
+    if count == 1:
+        return True
+    else:
+        return False
 
 
 # Working, return an array corresponding to a line, given a number
@@ -237,6 +263,7 @@ def Group(data, line, column):
     return group_content
 
 
+# Try a random suggestion
 def TryRandomSuggestion(data, suggestions):
     random_suggestion = random.randint(0, len(suggestions.keys()))
 
@@ -253,6 +280,7 @@ def TryRandomSuggestion(data, suggestions):
         i += 1
 
 
+# Working, check if two lists are alike
 def SameLists(data, old_data):
     x = 0
     for row in data:
@@ -263,7 +291,6 @@ def SameLists(data, old_data):
             y += 1
         x += 1
     return True
-
 
 
 # TODO : add line for each number added; write in a log file
@@ -283,3 +310,40 @@ def ShowSuggestions(suggestions):
         print(' ', row[0] + 1, '    ', row[1] + 1, '   ', suggestions[row])
 
     print('')
+
+
+# NOT DONE
+def GenerateSudoku(name):
+    sudoku_generated = False
+
+    data = []
+
+    while not sudoku_generated:
+
+        row = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+        random.shuffle(row)
+        data.append(row)
+        if not CheckValidity(data):
+            del data[-1]
+
+        ShowTable(data)
+
+        if len(data) == 9:
+            sudoku_generated = True
+
+    ShowTable(data)
+    pass
+
+
+def CheckValidity(data):
+    x = 0
+    for row in data:
+        y = 0
+        for cell in row:
+            if not IsOnceInArray(Line(data, x), cell) or not IsOnceInArray(Column(data, y), cell) or not IsOnceInArray(
+                    Group(data, x, y), cell):
+                return False
+            y += 1
+        x += 1
+
+    return True
