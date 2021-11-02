@@ -48,7 +48,7 @@ def TryToSolve(data):
             old_data.append(row.copy())
 
         suggestions = CreateSuggestions(data)
-        SingledOutSuggestions(suggestions, data)s
+        SingledOutSuggestions(suggestions, data)
 
         suggestions = CreateSuggestions(data)
         CheckSuggestions(suggestions, data)
