@@ -1,3 +1,7 @@
+import controller as Controller
+
+
+steps = 0
 
 
 class Bcolors:
@@ -8,7 +12,8 @@ class Bcolors:
     ENDC = '\033[0m'
 
 
-def ShowTable(data):
+# OLD
+def ShowTableOld(data):
     colour_line = Bcolors.OKBLUE
     colour_column = Bcolors.OKBLUE
     colour_empty_cell = Bcolors.FAIL
@@ -32,3 +37,37 @@ def ShowTable(data):
                 print(colour_column + ' | ' + Bcolors.ENDC + cell, end='')
         print(colour_column + ' | ' + Bcolors.ENDC)
         print(colour_line + ' - - - - - - - - - - - - - - - - - - -' + Bcolors.ENDC)
+
+
+# TODO : add line for each number added; write in a log file
+# Show the current state of the sudoku
+def ShowTable(data):
+    if Controller.SudokuUnfinished:
+        print('\n      Table')
+
+        for row in data:
+            print(' '.join(row))
+        print('')
+
+
+# Show the current possibilities
+def ShowSuggestions(suggestions):
+    if suggestions != {}:
+        print('Row | Column | Candidates')
+
+        for row in suggestions:
+            print(' ', row[0] + 1, '    ', row[1] + 1, '   ', suggestions[row])
+
+        print('')
+
+
+def ShowStep(suggestion, row, column, message):
+    print("Writing down : ", suggestion, " | Row : ", row, " | Column : ", column,
+          " | ", message)
+
+
+def NextStep():
+    global steps
+    print('\n--- Steps: ' + str(steps) + ' ---')
+    steps = steps + 1
+    return steps

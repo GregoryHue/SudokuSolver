@@ -1,21 +1,11 @@
-import controller as controller
+import controller as Controller
 
 
 def main():
+
     name = 'extreme'
-
-    data = controller.ReadFile(name)
-    controller.TryToSolve(data)
-    controller.WriteFile(name + '-output', data)
-
+    Controller.StartSudokuSolver(name)
     print("Completed ... ?")
-
-
-def main_old():
-    controller.GenerateSudoku('new_sudoku')
-
-    print("End of script")
-
 
 if __name__ == '__main__':
     main()

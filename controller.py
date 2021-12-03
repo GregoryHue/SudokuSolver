@@ -1,30 +1,9 @@
 import random
-
+import view as View
+import model as Model
 
 # suggestion : {(1, 0): ['1', '2', '4', '7', '9'], (1, 1): ['1', '4', '7', '9'], (1, 2): ['1', '2', '9'] ... }
 # data : [['3', '6', '8', '1', '2', '4', '7', '9', '5'], ['*', '*', '*', '*', '3', '*', '*', '*', '6'] ... ]
-
-# Working, read a csv file in /files, given its name, and return its content
-def ReadFile(name):
-    data = []
-    with open('files/' + name + '.txt') as file:
-        file.seek(0)
-        idx_row = 0
-        for row in file:
-            s_row = row.rstrip().split(' ')
-            if s_row:
-                data.append([])
-                for number in s_row:
-                    data[idx_row].append(number)
-                idx_row += 1
-        return data
-
-
-# Working, create a csv file in /files, and write the data inside
-def WriteFile(name, data):
-    with open('files/' + name + '.txt', 'w') as newfile:
-        for row in data:
-            newfile.writelines(' '.join(row) + '\n')
 
 
 # Working, return True if a cell is still empty
@@ -33,6 +12,13 @@ def SudokuUnfinished(data):
         if '*' in row:
             return True
     return False
+
+
+def StartSudokuSolver(name):
+    
+    data = Model.ReadFile(name)
+    TryToSolve(data)
+    Model.WriteFile(name + '-output', data)
 
 
 def TryToSolve(data):
@@ -71,10 +57,10 @@ def TryToSolve(data):
 def SingledOutSuggestions(suggestions, data):
     for row in suggestions:
         if len(suggestions[row]) == 1:
+            View.NextStep()
             data[row[0]][row[1]] = suggestions[row][0]
-            print("Writing down : ", suggestions[row][0], " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
-                  " | Only suggestion in single cell")
-            ShowTable(data)
+            View.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in single cell")
+            View.ShowTable(data)
             return suggestions
 
 
@@ -96,7 +82,7 @@ def CreateSuggestions(data):
                             suggestions[x, y] = [str(number)]
                 y += 1
             x += 1
-    ShowSuggestions(suggestions)
+    View.ShowSuggestions(suggestions)
     return suggestions
 
 
@@ -105,22 +91,22 @@ def CheckSuggestions(suggestions, data):
     for row in suggestions:
         for suggestion in suggestions[row]:
             if IsOnlySuggestionInLine(suggestions, suggestion, row[0]):
+                View.NextStep()
                 data[row[0]][row[1]] = suggestion
-                print("Writing down : ", suggestions[row][0], " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
-                      " | Only suggestion in line")
-                ShowTable(data)
+                View.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in line")
+                View.ShowTable(data)
                 return suggestions
             if IsOnlySuggestionInColumn(suggestions, suggestion, row[1]):
+                View.NextStep()
                 data[row[0]][row[1]] = suggestion
-                print("Writing down : ", suggestions[row][0], " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
-                      " | Only suggestion in column")
-                ShowTable(data)
+                View.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in column")
+                View.ShowTable(data)
                 return suggestions
             if IsOnlySuggestionInSquare(suggestions, suggestion, row[0], row[1]):
+                View.NextStep()
                 data[row[0]][row[1]] = suggestion
-                print("Writing down : ", suggestions[row][0], " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
-                      " | Only suggestion in square")
-                ShowTable(data)
+                View.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in square")
+                View.ShowTable(data)
                 return suggestions
 
 
@@ -272,9 +258,9 @@ def TryRandomSuggestion(data, suggestions):
         if i == random_suggestion:
             random_number = random.choice(suggestions[row])
 
+            View.NextStep()
             data[row[0]][row[1]] = random_number
-            print("Writing down : ", random_number, " | Row : ", row[0] + 1, " | Column : ", row[1] + 1,
-                  " | Trying a random step")
+            View.ShowStep(random_number, row[0] + 1, row[1] + 1, "Trying a random step")
             return data
 
         i += 1
@@ -293,25 +279,6 @@ def SameLists(data, old_data):
     return True
 
 
-# TODO : add line for each number added; write in a log file
-def ShowTable(data):
-    print('\n      Table')
-
-    for row in data:
-        print(' '.join(row))
-    print('')
-
-
-def ShowSuggestions(suggestions):
-    print('\n' * 2)
-    print('Row | Column | Candidates')
-
-    for row in suggestions:
-        print(' ', row[0] + 1, '    ', row[1] + 1, '   ', suggestions[row])
-
-    print('')
-
-
 # NOT DONE
 def GenerateSudoku(name):
     sudoku_generated = False
@@ -326,12 +293,12 @@ def GenerateSudoku(name):
         if not CheckValidity(data):
             del data[-1]
 
-        ShowTable(data)
+        View.ShowTable(data)
 
         if len(data) == 9:
             sudoku_generated = True
 
-    ShowTable(data)
+    View.ShowTable(data)
     pass
 
 
