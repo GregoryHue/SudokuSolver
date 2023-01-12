@@ -7,3 +7,4 @@ env/
 
 # Result files
 app/files/**-output.txt
+app/files/log.txt

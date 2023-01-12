@@ -53,7 +53,7 @@ def ShowTable(data):
 # Show the current possibilities
 def ShowSuggestions(suggestions):
     if suggestions != {}:
-        print('Row | Column | Candidates')
+        print('Row | Column | Suggestions')
 
         for row in suggestions:
             print(' ', row[0] + 1, '    ', row[1] + 1, '   ', suggestions[row])
