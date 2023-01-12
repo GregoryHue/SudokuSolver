@@ -1,21 +1,50 @@
-# PySudoSolver
+# PySudokuSolver
 
 Python script to solve a Sudoku.
 
-This script solves Sudokus, between 5 difficulties (beginner, easy, medium, hard, extreme).
+## Project setup
 
-As of today, it uses 3 different methods to complete the Sudoku :
+Get into the project folder:
+```bash
+cd PySudokuSolver
+```
 
-* Single cell : write down a number if it's the only possibility in that cell.
+Create a new environment:
 
-* Single line / column / square : write down a number if it's the only possibility in a line, column or square.
+```bash
+virtualenv --python="/usr/local/bin/python3" env
+```
 
-* Random step : when it finds nothing to write down, it creates a back-up of the current state of the Sudoku and try a random step, amongs the possibilities. In case this leads to a failure, it comes back to that back-up.
+Get into that environment:
 
-After every step, a function to generate the possibilities is called.
+```bash
+source env/bin/activate 
+```
 
-# TODO
+## Usage
 
-Add a generator of Sudoku.
+Run:
 
-Add a step by step explanation.
+```bash
+python3 app/src/main.py
+```
+
+## Versions
+
+* Python 3.8.10
+* Ubuntu 20.04.5
+
+## Structure
+
+```
+app/
+env/
+.gitignore
+README.md
+```
+
+## TODO
+
+* Make it executable with command line
+* Add parameters
+* Add interface

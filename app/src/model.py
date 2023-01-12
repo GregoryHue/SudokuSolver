@@ -1,7 +1,7 @@
 # Working, read a csv file in /files, given its name, and return its content
 def ReadFile(name):
     data = []
-    with open('files/' + name + '.txt') as file:
+    with open('app/files/' + name + '.txt') as file:
         file.seek(0)
         idx_row = 0
         for row in file:
@@ -16,13 +16,13 @@ def ReadFile(name):
 
 # Working, create a csv file in /files, and write the data inside
 def WriteFile(name, data):
-    with open('files/' + name + '.txt', 'w') as newfile:
+    with open('app/files/' + name + '.txt', 'w') as newfile:
         for row in data:
             newfile.writelines(' '.join(row) + '\n')
 
 
 def ReadLog(name):
     data = []
-    with open('files/' + name + '.txt', 'w') as file:
+    with open('app/files/' + name + '.txt', 'w') as file:
         file.write("---------- LOG FILE ----------")
         return file

@@ -1,4 +1,4 @@
-import controller as Controller
+import controller
 
 
 steps = 0
@@ -42,7 +42,7 @@ def ShowTableOld(data):
 # TODO : add line for each number added; write in a log file
 # Show the current state of the sudoku
 def ShowTable(data):
-    if Controller.SudokuUnfinished:
+    if controller.SudokuUnfinished:
         print('\n      Table')
 
         for row in data:

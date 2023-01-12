@@ -1,6 +1,6 @@
 import random
-import view as View
-import model as Model
+import view
+import model
 
 # suggestion : {(1, 0): ['1', '2', '4', '7', '9'], (1, 1): ['1', '4', '7', '9'], (1, 2): ['1', '2', '9'] ... }
 # data : [['3', '6', '8', '1', '2', '4', '7', '9', '5'], ['*', '*', '*', '*', '3', '*', '*', '*', '6'] ... ]
@@ -16,9 +16,9 @@ def SudokuUnfinished(data):
 
 def StartSudokuSolver(name):
     
-    data = Model.ReadFile(name)
+    data = model.ReadFile(name)
     TryToSolve(data)
-    Model.WriteFile(name + '-output', data)
+    model.WriteFile(name + '-output', data)
 
 
 def TryToSolve(data):
@@ -57,10 +57,10 @@ def TryToSolve(data):
 def SingledOutSuggestions(suggestions, data):
     for row in suggestions:
         if len(suggestions[row]) == 1:
-            View.NextStep()
+            view.NextStep()
             data[row[0]][row[1]] = suggestions[row][0]
-            View.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in single cell")
-            View.ShowTable(data)
+            view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in single cell")
+            view.ShowTable(data)
             return suggestions
 
 
@@ -82,7 +82,7 @@ def CreateSuggestions(data):
                             suggestions[x, y] = [str(number)]
                 y += 1
             x += 1
-    View.ShowSuggestions(suggestions)
+    view.ShowSuggestions(suggestions)
     return suggestions
 
 
@@ -91,22 +91,22 @@ def CheckSuggestions(suggestions, data):
     for row in suggestions:
         for suggestion in suggestions[row]:
             if IsOnlySuggestionInLine(suggestions, suggestion, row[0]):
-                View.NextStep()
+                view.NextStep()
                 data[row[0]][row[1]] = suggestion
-                View.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in line")
-                View.ShowTable(data)
+                view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in line")
+                view.ShowTable(data)
                 return suggestions
             if IsOnlySuggestionInColumn(suggestions, suggestion, row[1]):
-                View.NextStep()
+                view.NextStep()
                 data[row[0]][row[1]] = suggestion
-                View.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in column")
-                View.ShowTable(data)
+                view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in column")
+                view.ShowTable(data)
                 return suggestions
             if IsOnlySuggestionInSquare(suggestions, suggestion, row[0], row[1]):
-                View.NextStep()
+                view.NextStep()
                 data[row[0]][row[1]] = suggestion
-                View.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in square")
-                View.ShowTable(data)
+                view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in square")
+                view.ShowTable(data)
                 return suggestions
 
 
@@ -258,9 +258,9 @@ def TryRandomSuggestion(data, suggestions):
         if i == random_suggestion:
             random_number = random.choice(suggestions[row])
 
-            View.NextStep()
+            view.NextStep()
             data[row[0]][row[1]] = random_number
-            View.ShowStep(random_number, row[0] + 1, row[1] + 1, "Trying a random step")
+            view.ShowStep(random_number, row[0] + 1, row[1] + 1, "Trying a random step")
             return data
 
         i += 1
@@ -293,12 +293,12 @@ def GenerateSudoku(name):
         if not CheckValidity(data):
             del data[-1]
 
-        View.ShowTable(data)
+        view.ShowTable(data)
 
         if len(data) == 9:
             sudoku_generated = True
 
-    View.ShowTable(data)
+    view.ShowTable(data)
     pass
 
 
