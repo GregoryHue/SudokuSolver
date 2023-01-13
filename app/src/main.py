@@ -1,19 +1,22 @@
 import controller
 import sys
+import inquirer
+
 
 
 def main():
 
-    name = 'extreme'
-    orig_stdout = sys.stdout
-    f = open('app/files/log.txt', 'w')
-    sys.stdout = f
+    questions = [
+    inquirer.List('difficulty',
+                    message="Which difficulty?",
+                    choices=['beginner', 'easy', 'medium', 'hard', 'extreme'],
+                ),
+    ]
+    name = inquirer.prompt(questions)
 
-    controller.StartSudokuSolver(name)
+    controller.StartSudokuSolver(name["difficulty"])
 
-    sys.stdout = orig_stdout
-    f.close()
-    print("Completed.\nCheck 'app/files/" + name + "-output.txt' to see the result and 'app/files/log.txt' to see every steps in details.")
+    print("Completed.\nCheck 'app/files/" + name["difficulty"] + "-output.txt' to see the result and 'app/files/log.txt' to see every steps in details.")
 
 if __name__ == '__main__':
     main()

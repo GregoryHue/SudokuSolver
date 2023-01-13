@@ -1,6 +1,7 @@
 import random
 import view
 import model
+import sys
 
 # Example :
 # suggestion : {(1, 0): ['1', '2', '4', '7', '9'], (1, 1): ['1', '4', '7', '9'], (1, 2): ['1', '2', '9'] ... }
@@ -16,10 +17,29 @@ def SudokuUnfinished(data):
 
 
 def StartSudokuSolver(name):
-    
     data = model.ReadFile(name)
+    # Showing the original file
+    print('    Original')
+    with open('app/files/' + name + '.txt', 'r') as o:
+        print(o.read())
+        
+    # Redirecting prints into a log file
+    orig_stdout = sys.stdout
+    f = open('app/files/log.txt', 'w')
+    sys.stdout = f
+
+    # Solving the Sudoku
     TryToSolve(data)
     model.WriteFile(name + '-output', data)
+
+    # Redirecting prints back to the console
+    sys.stdout = orig_stdout
+    f.close()
+
+    # Showing the result file
+    print('\n     Result')
+    with open('app/files/' + name + '-output.txt', 'r') as r:
+        print(r.read())
 
 
 def TryToSolve(data):
