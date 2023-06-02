@@ -81,7 +81,7 @@ def SingledOutSuggestions(suggestions, data):
             view.NextStep()
             data[row[0]][row[1]] = suggestions[row][0]
             view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in single cell")
-            view.ShowTable(data)
+            view.ShowTable(data, row[0], row[1])
             return suggestions
 
 
@@ -115,19 +115,19 @@ def CheckSuggestions(suggestions, data):
                 view.NextStep()
                 data[row[0]][row[1]] = suggestion
                 view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in line")
-                view.ShowTable(data)
+                view.ShowTable(data, row[0], row[1])
                 return suggestions
             if IsOnlySuggestionInColumn(suggestions, suggestion, row[1]):
                 view.NextStep()
                 data[row[0]][row[1]] = suggestion
                 view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in column")
-                view.ShowTable(data)
+                view.ShowTable(data, row[0], row[1])
                 return suggestions
             if IsOnlySuggestionInSquare(suggestions, suggestion, row[0], row[1]):
                 view.NextStep()
                 data[row[0]][row[1]] = suggestion
                 view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in square")
-                view.ShowTable(data)
+                view.ShowTable(data, row[0], row[1])
                 return suggestions
 
 
@@ -314,12 +314,12 @@ def GenerateSudoku(name):
         if not CheckValidity(data):
             del data[-1]
 
-        view.ShowTable(data)
+        view.ShowTable(data, row[0], row[1])
 
         if len(data) == 9:
             sudoku_generated = True
 
-    view.ShowTable(data)
+    view.ShowTable(data, row[0], row[1])
     pass
 
 

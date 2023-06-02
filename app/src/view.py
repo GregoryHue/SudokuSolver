@@ -41,12 +41,25 @@ def ShowTableOld(data):
 
 # TODO : add line for each number added; write in a log file
 # Show the current state of the sudoku
-def ShowTable(data):
+def ShowTable(data, new_row, new_column):
     if controller.SudokuUnfinished:
         print('\n      Table')
-
+        i = 0
         for row in data:
-            print(' '.join(row))
+            if i == new_row:
+                j = 0
+                for column in row:
+                    if j == new_column:
+                        print('\033[92m' + column + '\033[0m' + ' ', end='')
+                    else:
+                        print(column + ' ', end='')
+
+                    if j == 8:
+                        print('')
+                    j = j + 1
+            else:
+                print(' '.join(row))
+            i = i + 1
         print('')
 
 
@@ -61,7 +74,7 @@ def ShowSuggestions(suggestions):
         print('')
 
 
-def ShowStep(suggestion, row, column, message):
+def ShowStep(suggestion, row, column, message, ):
     print("Writing down : ", suggestion, " | Row : ", row, " | Column : ", column,
           " | ", message)
 
