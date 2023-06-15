@@ -64,18 +64,18 @@ def ShowTable(data, new_row, new_column):
 
 
 # Show the current possibilities
-def ShowSuggestions(suggestions):
-    if suggestions != {}:
-        print('Row | Column | Suggestions')
+def ShowSuggestions(possibilities):
+    if possibilities != {}:
+        print('Row | Column | Possibilities')
 
-        for row in suggestions:
-            print(' ', row[0] + 1, '    ', row[1] + 1, '   ', suggestions[row])
+        for row in possibilities:
+            print(' ', row[0] + 1, '    ', row[1] + 1, '   ', possibilities[row])
 
         print('')
 
 
-def ShowStep(suggestion, row, column, message, ):
-    print("Writing down : ", suggestion, " | Row : ", row, " | Column : ", column,
+def ShowStep(possibility, row, column, message, ):
+    print("Writing down : ", possibility, " | Row : ", row, " | Column : ", column,
           " | ", message)
 
 

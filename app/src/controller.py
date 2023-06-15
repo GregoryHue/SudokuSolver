@@ -4,7 +4,7 @@ import model
 import sys
 
 # Example :
-# suggestion : {(1, 0): ['1', '2', '4', '7', '9'], (1, 1): ['1', '4', '7', '9'], (1, 2): ['1', '2', '9'] ... }
+# possibility : {(1, 0): ['1', '2', '4', '7', '9'], (1, 1): ['1', '4', '7', '9'], (1, 2): ['1', '2', '9'] ... }
 # data : [['3', '6', '8', '1', '2', '4', '7', '9', '5'], ['*', '*', '*', '*', '3', '*', '*', '*', '6'] ... ]
 
 
@@ -51,43 +51,43 @@ def TryToSolve(data):
         for row in data:
             old_data.append(row.copy())
 
-        suggestions = CreateSuggestions(data)
-        SingledOutSuggestions(suggestions, data)
+        possibilities = CreateSuggestions(data)
+        SingledOutSuggestions(possibilities, data)
 
-        suggestions = CreateSuggestions(data)
-        CheckSuggestions(suggestions, data)
+        possibilities = CreateSuggestions(data)
+        CheckSuggestions(possibilities, data)
 
         if SameLists(data, old_data):
             if not safe_data:
                 for row in data:
                     safe_data.append(row.copy())
                 print("Creating a safe data")
-            elif not suggestions:
+            elif not possibilities:
                 data = []
                 for row in safe_data:
                     data.append(row.copy())
                 print("Returning to safe data")
 
-            suggestions = CreateSuggestions(data)
-            TryRandomSuggestion(data, suggestions)
+            possibilities = CreateSuggestions(data)
+            TryRandomSuggestion(data, possibilities)
 
     return data
 
 
-# Working, for every cell that has only 1 suggestion, it confirms it and write it in data
-def SingledOutSuggestions(suggestions, data):
-    for row in suggestions:
-        if len(suggestions[row]) == 1:
+# Working, for every cell that has only 1 possibility, it confirms it and write it in data
+def SingledOutSuggestions(possibilities, data):
+    for row in possibilities:
+        if len(possibilities[row]) == 1:
             view.NextStep()
-            data[row[0]][row[1]] = suggestions[row][0]
-            view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in single cell")
+            data[row[0]][row[1]] = possibilities[row][0]
+            view.ShowStep(possibilities[row][0], row[0] + 1, row[1] + 1, "Only possibility in single cell")
             view.ShowTable(data, row[0], row[1])
-            return suggestions
+            return possibilities
 
 
-# Working, check for every cell, every possible number, then write it in suggestions = {}
+# Working, check for every cell, every possible number, then write it in possibilities = {}
 def CreateSuggestions(data):
-    suggestions = {}
+    possibilities = {}
     for number in range(1, 10):
         x = 0
         for row in data:
@@ -98,45 +98,45 @@ def CreateSuggestions(data):
                                                                                           number) and not IsNumberInArray(
                         Group(data, x, y), number):
                         try:
-                            suggestions[x, y].append(str(number))
+                            possibilities[x, y].append(str(number))
                         except KeyError:
-                            suggestions[x, y] = [str(number)]
+                            possibilities[x, y] = [str(number)]
                 y += 1
             x += 1
-    view.ShowSuggestions(suggestions)
-    return suggestions
+    view.ShowSuggestions(possibilities)
+    return possibilities
 
 
-# Working, write down single suggestions in line, column, and square
-def CheckSuggestions(suggestions, data):
-    for row in suggestions:
-        for suggestion in suggestions[row]:
-            if IsOnlySuggestionInLine(suggestions, suggestion, row[0]):
+# Working, write down single possibilities in line, column, and square
+def CheckSuggestions(possibilities, data):
+    for row in possibilities:
+        for possibility in possibilities[row]:
+            if IsOnlySuggestionInLine(possibilities, possibility, row[0]):
                 view.NextStep()
-                data[row[0]][row[1]] = suggestion
-                view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in line")
+                data[row[0]][row[1]] = possibility
+                view.ShowStep(possibilities[row][0], row[0] + 1, row[1] + 1, "Only possibility in line")
                 view.ShowTable(data, row[0], row[1])
-                return suggestions
-            if IsOnlySuggestionInColumn(suggestions, suggestion, row[1]):
+                return possibilities
+            if IsOnlySuggestionInColumn(possibilities, possibility, row[1]):
                 view.NextStep()
-                data[row[0]][row[1]] = suggestion
-                view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in column")
+                data[row[0]][row[1]] = possibility
+                view.ShowStep(possibilities[row][0], row[0] + 1, row[1] + 1, "Only possibility in column")
                 view.ShowTable(data, row[0], row[1])
-                return suggestions
-            if IsOnlySuggestionInSquare(suggestions, suggestion, row[0], row[1]):
+                return possibilities
+            if IsOnlySuggestionInSquare(possibilities, possibility, row[0], row[1]):
                 view.NextStep()
-                data[row[0]][row[1]] = suggestion
-                view.ShowStep(suggestions[row][0], row[0] + 1, row[1] + 1, "Only suggestion in square")
+                data[row[0]][row[1]] = possibility
+                view.ShowStep(possibilities[row][0], row[0] + 1, row[1] + 1, "Only possibility in square")
                 view.ShowTable(data, row[0], row[1])
-                return suggestions
+                return possibilities
 
 
-# Working, check if single suggestions in line
-def IsOnlySuggestionInLine(suggestions, suggestion, line):
+# Working, check if single possibilities in line
+def IsOnlySuggestionInLine(possibilities, possibility, line):
     same_suggestion_found = 0
-    for row in suggestions:
-        for original_sug in suggestions[row]:
-            if row[0] == line and original_sug == suggestion:
+    for row in possibilities:
+        for original_sug in possibilities[row]:
+            if row[0] == line and original_sug == possibility:
                 same_suggestion_found += 1
 
     if same_suggestion_found == 1:
@@ -144,12 +144,12 @@ def IsOnlySuggestionInLine(suggestions, suggestion, line):
     return False
 
 
-# Working, check if single suggestions in column
-def IsOnlySuggestionInColumn(suggestions, suggestion, column):
+# Working, check if single possibilities in column
+def IsOnlySuggestionInColumn(possibilities, possibility, column):
     same_suggestion_found = 0
-    for row in suggestions:
-        for original_sug in suggestions[row]:
-            if row[1] == column and original_sug == suggestion:
+    for row in possibilities:
+        for original_sug in possibilities[row]:
+            if row[1] == column and original_sug == possibility:
                 same_suggestion_found += 1
 
     if same_suggestion_found == 1:
@@ -157,8 +157,8 @@ def IsOnlySuggestionInColumn(suggestions, suggestion, column):
     return False
 
 
-# Working, check if single suggestions in square
-def IsOnlySuggestionInSquare(suggestions, suggestion, line, column):
+# Working, check if single possibilities in square
+def IsOnlySuggestionInSquare(possibilities, possibility, line, column):
     same_suggestion_found = 0
     limits = []
 
@@ -176,9 +176,9 @@ def IsOnlySuggestionInSquare(suggestions, suggestion, line, column):
         x_line += 3
         y_line += 3
 
-    for row in suggestions:
-        for original_sug in suggestions[row]:
-            if limits[0] <= row[0] <= limits[1] and limits[2] <= row[1] <= limits[3] and original_sug == suggestion:
+    for row in possibilities:
+        for original_sug in possibilities[row]:
+            if limits[0] <= row[0] <= limits[1] and limits[2] <= row[1] <= limits[3] and original_sug == possibility:
                 same_suggestion_found += 1
 
     if same_suggestion_found == 1:
@@ -270,14 +270,14 @@ def Group(data, line, column):
     return group_content
 
 
-# Try a random suggestion
-def TryRandomSuggestion(data, suggestions):
-    random_suggestion = random.randint(0, len(suggestions.keys()))
+# Try a random possibility
+def TryRandomSuggestion(data, possibilities):
+    random_suggestion = random.randint(0, len(possibilities.keys()))
 
     i = 0
-    for row in suggestions:
+    for row in possibilities:
         if i == random_suggestion:
-            random_number = random.choice(suggestions[row])
+            random_number = random.choice(possibilities[row])
 
             view.NextStep()
             data[row[0]][row[1]] = random_number
